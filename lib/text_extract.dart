@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:capstone_cv/text_result.dart';
 import 'package:flutter/material.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GetText extends StatefulWidget {
@@ -14,6 +15,7 @@ class _GetTextState extends State<GetText> {
   bool isImagePicked = false;
   late PickedFile _image;
   final picker = ImagePicker();
+  final textDetector = GoogleMlKit.vision.textDetector();
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +43,30 @@ class _GetTextState extends State<GetText> {
         ),
         floatingActionButton: FloatingActionButton(
           tooltip: 'Click To Scan',
-          onPressed: () {
+          onPressed: () async {
+            final inputImage = InputImage.fromFilePath(_image.path);
+            final RecognisedText recognisedText =
+                await textDetector.processImage(inputImage);
+            String text = recognisedText.text;
+            for (TextBlock block in recognisedText.blocks) {
+              final Rect rect = block.rect;
+              final List<Offset> cornerPoints = block.cornerPoints;
+              final String text = block.text;
+              final List<String> languages = block.recognizedLanguages;
+
+              for (TextLine line in block.lines) {
+                // Same getters as TextBlock
+                for (TextElement element in line.elements) {
+                  // Same getters as TextBlock
+                }
+              }
+            }
+            print(text);
+
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Details();
+              return Details(
+                text: text,
+              );
             }));
           },
           child: Icon(Icons.search),

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 class Details extends StatefulWidget {
-  // final String text;
-  //
-  // Details(this.text);
+  final String text;
+
+  Details({required this.text});
 
   @override
   _DetailsState createState() => _DetailsState();
@@ -14,8 +14,8 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   final GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   final FlutterTts flutterTts = FlutterTts();
-  String dummyText =
-      'I thought by eliminating half of life, the other half would thrive, but you have shown me… that’s impossible. As long as there are those that remember what was, there will always be those, that are unable to accept what can be. They will resist.';
+  // String dummyText =
+  //     'I thought by eliminating half of life, the other half would thrive, but you have shown me… that’s impossible. As long as there are those that remember what was, there will always be those, that are unable to accept what can be. They will resist.';
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +29,13 @@ class _DetailsState extends State<Details> {
             onPressed: () async {
               await flutterTts.setLanguage('en-US');
               await flutterTts.setPitch(1);
-              await flutterTts.speak(dummyText);
+              await flutterTts.speak(widget.text);
             },
           ),
           IconButton(
             icon: Icon(Icons.copy),
             onPressed: () {
-              FlutterClipboard.copy(dummyText).then((value) =>
+              FlutterClipboard.copy(widget.text).then((value) =>
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text('Copied'))));
               // _key
@@ -50,8 +50,8 @@ class _DetailsState extends State<Details> {
         alignment: Alignment.center,
         height: double.infinity,
         width: double.infinity,
-        child:
-            SelectableText(dummyText.isEmpty ? 'No Text Available' : dummyText),
+        child: SelectableText(
+            widget.text.isEmpty ? 'No Text Available' : widget.text),
       ),
     );
   }
